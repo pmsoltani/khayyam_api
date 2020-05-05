@@ -2,6 +2,7 @@ from datetime import date
 from typing import Iterable
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from khayyam import JalaliDate
 
 
@@ -14,6 +15,11 @@ j_year_range = (1351, 1451)
 def arg_check(valid_args: tuple, iterable: Iterable) -> None:
     if any(arg not in valid_args for arg in iterable):
         raise HTTPException(status_code=404)
+
+
+@app.get("/")
+async def root(request: Request):
+    return RedirectResponse(app.url_path_for("about"))
 
 
 @app.get("/today")
