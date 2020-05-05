@@ -2,9 +2,9 @@ from datetime import date
 from typing import Iterable
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import RedirectResponse
 from khayyam import JalaliDate
 
-from khayyam_api._version import __version__
 
 app = FastAPI()
 
@@ -15,6 +15,11 @@ j_year_range = (1351, 1451)
 def arg_check(valid_args: tuple, iterable: Iterable) -> None:
     if any(arg not in valid_args for arg in iterable):
         raise HTTPException(status_code=404)
+
+
+@app.get("/")
+async def root(request: Request):
+    return RedirectResponse(app.url_path_for("about"))
 
 
 @app.get("/today")
@@ -66,17 +71,6 @@ async def j2g(y: int, m: int, d: int, request: Request):
 @app.get("/about")
 async def about(request: Request):
     arg_check((), request.query_params.keys())
-    return {
-        "name": "khayyam_api",
-        "version": __version__,
-        "description": "A dead simple Jalali API",
-        "author": "Pooria Soltani",
-        "contact": {"linkedin": "https://www.linkedin.com/in/pmsoltani"},
-        "how_to_use": "/docs",
-        "license": "MIT",
-        "notice": (
-            "This API is hosted on a free server. "
-            + "It does not require authentication. "
-            + "Please do not send too many requests."
-        ),
-    }
+    from khayyam_api.about import about_khayyam_api
+
+    return about_khayyam_api
