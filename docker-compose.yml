@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  fastapi:
+    env_file: ".env"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        INSTALL_PATH: ${INSTALL_PATH}
+        POETRY_VERSION: ${POETRY_VERSION}
+        HOST: ${HOST}
+        PORT: ${PORT}
+    command: uvicorn khayyam_api.main:app --host ${HOST} --port ${PORT} --reload
+    restart: on-failure
+    volumes:
+      - ".:${INSTALL_PATH}"
+    ports:
+      - "${PORT}:${PORT}"

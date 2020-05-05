@@ -1,6 +1,6 @@
 # Khayyam
 
-A super simple Jalali time API, running on:
+A dead simple Jalali API, running on:
 
 * Docker
 * Python 3.6
