@@ -24,6 +24,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.zip
 
 # Unit test / coverage reports
 htmlcov/
@@ -63,4 +64,3 @@ thumbs.db
 logs/
 
 # config
-config.*
