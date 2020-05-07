@@ -2,11 +2,21 @@ from datetime import date
 from typing import Iterable
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from khayyam import JalaliDate
 
+from config import CORS_ORIGINS
+
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=CORS_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 g_year_range = (1971, 2071)
 j_year_range = (1351, 1451)
