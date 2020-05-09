@@ -33,11 +33,13 @@ async def root(request: Request):
 
 
 @app.get("/today")
-async def today(request: Request):
-    arg_check((), request.query_params.keys())
+async def today(request: Request, iso: bool = False):
+    arg_check(("iso",), request.query_params.keys())
 
     j = JalaliDate.today()
     g = j.todate()
+    if iso:
+        return {"g": g.isoformat(), "j": j.isoformat()}
     return {
         "g": {"y": g.year, "m": g.month, "d": g.day},
         "j": {"y": j.year, "m": j.month, "d": j.day},
@@ -45,8 +47,8 @@ async def today(request: Request):
 
 
 @app.get("/g2j")
-async def g2j(y: int, m: int, d: int, request: Request):
-    arg_check(("y", "m", "d"), request.query_params.keys())
+async def g2j(y: int, m: int, d: int, request: Request, iso: bool = False):
+    arg_check(("y", "m", "d", "iso"), request.query_params.keys())
 
     if y not in range(*g_year_range):
         raise HTTPException(status_code=404)
@@ -54,6 +56,8 @@ async def g2j(y: int, m: int, d: int, request: Request):
     try:
         g = date(year=y, month=m, day=d)
         j = JalaliDate(g)
+        if iso:
+            return {"j": j.isoformat()}
         return {
             "j": {"y": j.year, "m": j.month, "d": j.day},
         }
@@ -62,8 +66,8 @@ async def g2j(y: int, m: int, d: int, request: Request):
 
 
 @app.get("/j2g")
-async def j2g(y: int, m: int, d: int, request: Request):
-    arg_check(("y", "m", "d"), request.query_params.keys())
+async def j2g(y: int, m: int, d: int, request: Request, iso: bool = False):
+    arg_check(("y", "m", "d", "iso"), request.query_params.keys())
 
     if y not in range(*j_year_range):
         raise HTTPException(status_code=404)
@@ -71,6 +75,8 @@ async def j2g(y: int, m: int, d: int, request: Request):
     try:
         j = JalaliDate(year=y, month=m, day=d)
         g = j.todate()
+        if iso:
+            return {"g": g.isoformat()}
         return {
             "g": {"y": g.year, "m": g.month, "d": g.day},
         }
