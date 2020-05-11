@@ -7,9 +7,16 @@ from fastapi.responses import RedirectResponse
 from khayyam import JalaliDate
 
 from config import CORS_ORIGINS
+import khayyam_api._info as info
 
 
-app = FastAPI()
+app = FastAPI(
+    title=info.__project_name__,
+    description=info.__description__,
+    version=info.__version__,
+    redoc_url=None,
+)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ORIGINS,
@@ -32,7 +39,25 @@ async def root(request: Request):
     return RedirectResponse(app.url_path_for("about"))
 
 
-@app.get("/today")
+@app.get(
+    "/today",
+    responses={
+        200: {
+            "description": "Today in Gregorian and Jalali calendars",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "g": {"y": 2020, "m": 4, "d": 7},
+                        "j": {"y": 1399, "m": 2, "d": 18},
+                    }
+                },
+                "application/json (iso=True)": {
+                    "example": {"g": "2020-04-07", "j": "1399-02-18"}
+                },
+            },
+        },
+    },
+)
 async def today(request: Request, iso: bool = False):
     arg_check(("iso",), request.query_params.keys())
 
@@ -46,7 +71,20 @@ async def today(request: Request, iso: bool = False):
     }
 
 
-@app.get("/g2j")
+@app.get(
+    "/g2j",
+    responses={
+        200: {
+            "description": "Convert Gregorian to Jalali",
+            "content": {
+                "application/json": {
+                    "example": {"j": {"y": 1399, "m": 2, "d": 18}}
+                },
+                "application/json (iso=True)": {"example": {"j": "1399-02-18"}},
+            },
+        },
+    },
+)
 async def g2j(y: int, m: int, d: int, request: Request, iso: bool = False):
     arg_check(("y", "m", "d", "iso"), request.query_params.keys())
 
@@ -65,7 +103,20 @@ async def g2j(y: int, m: int, d: int, request: Request, iso: bool = False):
         raise HTTPException(status_code=404)
 
 
-@app.get("/j2g")
+@app.get(
+    "/j2g",
+    responses={
+        200: {
+            "description": "Convert Jalali to Gregorian",
+            "content": {
+                "application/json": {
+                    "example": {"g": {"y": 2020, "m": 4, "d": 7}}
+                },
+                "application/json (iso=True)": {"example": {"g": "2020-04-07"}},
+            },
+        },
+    },
+)
 async def j2g(y: int, m: int, d: int, request: Request, iso: bool = False):
     arg_check(("y", "m", "d", "iso"), request.query_params.keys())
 
