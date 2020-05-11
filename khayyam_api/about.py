@@ -1,6 +1,6 @@
 from khayyam import JalaliDate
 
-from khayyam_api._version import __version__
+import khayyam_api._info as info
 from khayyam_api.main import app
 
 start = JalaliDate(1399, 2, 18)
@@ -14,18 +14,18 @@ live_since = (
 
 
 about_khayyam_api = {
-    "name": "khayyam_api",
-    "version": __version__,
-    "description": "A dead simple Jalali API",
-    "repo": "https://github.com/pmsoltani/khayyam_api",
+    "name": info.__project_name__,
+    "version": info.__version__,
+    "description": info.__description__,
+    "repo": info.__repo__,
     "live_since": live_since,
     "author": {
-        "name": "Pooria Soltani",
-        "contact": {"linkedin": "https://www.linkedin.com/in/pmsoltani"},
+        "name": info.__author__,
+        "contact": {"email": info.__email__, "linkedin": info.__linkedin__},
     },
     "how_to_use": app.docs_url,
     "routes": tuple(app.openapi()["paths"]),
-    "license": "MIT",
+    "license": info.__license__,
     "notice": (
         "This API is hosted on a free server.",
         "It does not require authentication.",
